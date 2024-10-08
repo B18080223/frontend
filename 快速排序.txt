@@ -1,0 +1,28 @@
+let myArr=[5,4,2,10,1,19];
+
+
+//定义左右指针
+let quickSort=(nums,left,right)=>{
+  	if(left>=right) return nums;
+    let start=left;
+    let end=right;
+  	let base=left;//以左指针为基准值
+  	while(start<end){
+      while(start<end&&nums[end]>=nums[base]){
+        end--;
+      }
+      while(start<end&&nums[start]<=nums[base]){
+        start++;
+      }
+      [nums[start],nums[end]]=[nums[end],nums[start]];
+
+    }
+  	[nums[start],nums[base]]=[nums[base],nums[start]]; //将基准值与两指针的相遇的地方的值进行交互
+  	console.log(nums);
+    quickSort(nums,left,start-1);
+  	quickSort(nums,start+1,right);
+    return nums;
+}
+
+console.log(quickSort(myArr,0,myArr.length-1));
+

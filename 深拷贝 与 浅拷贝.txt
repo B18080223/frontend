@@ -1,0 +1,39 @@
+//浅拷贝 只复制第一层， 是对值的拷贝  是一种“引用”  那么改变其中一个对象后，另外一个对象也会跟着改变。
+//https://www.nowcoder.com/discuss/480825910694797312?sourceSSR=search
+
+let obj={a:1,b:2,c:{d:4,e:5,f:{g:6}}};  //Object { a: 1, b: 2, c: Object { d: 4, e: 5, f: Object { g: 6 } } }
+console.log(obj);
+//浅拷贝
+function shallowClone(obj){
+    if(typeof(obj)!='object'||obj==null) return;
+	let result={};
+	for(let key in obj){
+         result[key]=obj[key];
+         console.log(key,obj[key]);
+    }
+  return result;
+}
+console.log(shallowClone(obj));
+
+
+//深拷贝 递归复制第一层 拷贝对象多层的属性、
+
+let obj={a:1,b:2,c:{d:4,e:5,f:{g:6}}};  //Object { a: 1, b: 2, c: Object { d: 4, e: 5, f: Object { g: 6 } } }
+console.log(obj);
+function deepClone(obj,map){
+    if(typeof(obj)!='object'||obj==null) return obj;
+  	if(map.has(obj)) return map.get(obj);  
+	let result={};
+    map.set(obj,result);  //注意！！！ 这里的result存储的是一个地址，所以后面result改变，map里面的result也会跟着变
+    for(let key in obj){
+      result[key]=deepClone(obj[key],map); //如果map里面有obj[key]  则直接返回map里存储的obj[key]拷贝后的结果
+    }
+  	//再讨论一点 map.set(obj,result); 为什么不能放在这一行？
+    //因为这样的话，for循环里的map就根本不存在了
+    return result;
+}
+let myMap=new Map();  //map是全局变量
+console.log(deepClone(obj,myMap));
+for(let key of myMap.keys()){
+  console.log("key:",key,"value:",myMap.get(key));
+}

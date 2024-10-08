@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head> 
+<meta charset="utf-8"> 
+<title>测试</title> 
+
+<style>
+/*第一种垂直水平居中方式 即flex布局*/
+/*
+#container
+{
+ display:flex;
+ width:500px;
+ height:300px;
+ background-color:#CCCCCC;
+ margin:auto;
+}
+#header
+{
+ display:flex;
+ width:200px;
+ height:100px;
+ margin:auto;
+ background-color:#FF9900;
+}
+
+#text
+{
+ display:flex;
+ margin:auto;
+}
+*/
+
+/*第二种垂直水平居中方式 即利用absolute相对relative的属性*/
+#container
+{
+ width:500px;
+ height:300px;
+ background-color:#CCCCCC;
+ margin:auto;
+ position:relative;
+}
+#header
+{
+ display:flex;
+ width:200px;
+ height:100px;
+ top:50%;
+ left:50%;
+ transform:translate(-50%,-50%);
+ background-color:#FF9900;
+ position:absolute;
+}
+
+#text
+{
+ top:50%;
+ left:50%;
+ margin:0;
+ transform:translate(-50%,-50%);
+ position:absolute;
+}
+
+
+
+#triangle{
+	//width: 0;
+	//height: 0;
+	//border: 100px solid;
+	//border-color: orangered trans gold green;
+	//border-radius:20px;
+	
+	
+	width: 100px;
+	height: 100px;
+	background: gold;
+	border-radius:0 0 0 20px; /*左上 右上 右下 左下*/
+	clip-path: polygon(0 0, 0 100%, 100% 100%);/*每个点没有顺序  每个坐标先定义x 再定义y 左上角位坐标原点（0,0） 右下角位（100% 100%）*/ 
+}
+
+</style>
+
+
+</head>
+   
+<script>
+var greeting="hello";
+function Fn(){
+    this.username = "小明";
+	console.log(this.username);
+	console.log(this.greeting);
+} 
+Fn(); //小明 hello  => 相当于window.Fn()
+
+var zr = new Fn(); //小明  undefined    => 此时this已经绑定到zr这个对象上了
+//zr.greeting="weclome"     
+console.log(zr.greeting ); //weclome
+console.log(zr.username ); //小明
+console.log(Object.prototype.toString.call(zr)); //object
+console.log(Object.prototype.toString.call(Fn)); //function
+</script>
+
+
+
+
+<body id="myBody" >
+
+ <div id="container" >
+
+  <div id="header" >
+
+   <p  id="text">菜单</p>
+
+
+  </div>
+</div>
+
+<div id="triangle">
+</div>
+ 
+</body>
+</html>

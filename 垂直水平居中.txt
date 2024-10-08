@@ -1,0 +1,61 @@
+
+<style>
+#container
+{
+ width:500px;
+ height:300px;
+ background-color:#CCCCCC;
+ margin:auto;
+ position:relative; 
+}
+#header
+{
+ width:200px;
+ height:100px;
+ top:50%;
+ left:50%;
+ transform: translate(-50%, -50%);  /*将元素向左移动其宽度的 50%，向上移动其高度的 50%*/
+ background-color:#FF9900;
+ position:absolute;
+}
+
+#text
+{
+ top:50%;
+ left:50%;
+ margin:0;    /*防止自动继承margin的值*/
+ transform:translate(-50%,-50%);
+ position:absolute;
+}
+</style>
+
+
+
+
+//弹性布局
+//父子都设置为flex 和 margin:auto;
+<style>
+#container
+{
+ display:flex;
+ width:500px;
+ height:300px;
+ background-color:#CCCCCC;
+ margin:auto;
+}
+#header
+{
+ display:flex;
+ width:200px;
+ height:100px;
+ margin:auto;
+ background-color:#FF9900;
+}
+
+#text
+{
+ display:flex;
+ margin:auto;
+}
+</style>
+}

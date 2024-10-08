@@ -1,0 +1,10 @@
+//防抖 
+let timer = null //借助闭包
+function debounce(fn,delay){
+    return function() {
+        if(timer){
+            clearTimeout(timer) 
+        }
+        timer = setTimeout(fn,delay)
+    }
+}

@@ -1,0 +1,15 @@
+class Person{
+	constructor(name,gender){
+      this.gender=gender;
+      this.name=name;
+    }
+  	getName(){
+      console.log(this.name);
+    }
+  	getGender(){
+       console.log(this.gender);
+    }
+}
+
+let studentA=new Person("小明","男");
+studentA.getName();

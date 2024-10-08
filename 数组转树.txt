@@ -1,0 +1,25 @@
+// 示例数组
+const arr = [
+  {"id": 4, "parent_id": 3},
+  {"id": "aa", "parent_id": "a"},
+  {"id": 1, "parent_id": null},
+  {"id": 3, "parent_id": 2},
+  {"id": "a", "parent_id": "a0"},
+  {"id": 2,"parent_id": 1},
+  {"id": "a0","parent_id": null}
+];
+
+//定义一个buildTree函数，接受一个数组，以及目标父节点。通过深度优先的方式，将每个根节点赋予子节点
+let buildTree=(arr,pid)=>{
+	let result=[];  //存储pid这个父节点下的子树
+  	for(let item of arr){
+    	if(item.parent_id==pid){  //找到这个父节点的子节点
+          let child=buildTree(arr,item.id);//递归去寻找这个子节点对应的子树
+          if(child.length>0) item.child=child;
+          result.push(item);
+        }
+    }
+  return result;
+}
+console.log(buildTree(arr,null));
+

@@ -1,0 +1,21 @@
+const myPromise = Promise.resolve(Promise.resolve("promise"));
+
+function funOne(){
+  setTimeout(()=>{
+    console.log("setTimeout1")
+  },0);
+   myPromise.then(res => res).then(res => console.log(res));
+   console.log("Lastline1!")
+}
+
+async function funTwo() {
+	const res = await myPromise;
+        setTimeout(() =>{
+		console.log("setTimeout2");
+	},0)
+  	const a = await res;
+	console.log("two",a)
+	console.log("Lastline2!")
+}
+funTwo();
+funOne();

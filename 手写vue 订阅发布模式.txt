@@ -1,0 +1,27 @@
+vue 订阅发布模式
+class Emitter {
+    constructor() {
+        this.sub = {};
+    }
+    $emit(event, argumnets) {
+        const events = this.sub[event];
+        console.log(event, argumnets);
+        events.forEach(cb => {
+            cb(argumnets);
+        });
+    }
+    $on(event, callback) {
+        if (!this.sub[event]) {
+            this.sub[event] = [];
+        }
+        this.sub[event].push(callback);
+    }
+}
+const eventBus = new Emitter();
+ 
+eventBus.$on('setName', (value) => {
+    console.log(value, 90)
+});
+setTimeout(() => {
+    eventBus.$emit('setName', {name: 67});
+}, 1000)

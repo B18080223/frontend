@@ -1,0 +1,21 @@
+let myArr=[1,[2,[3,[6]],4,5]];
+//let myArr=[2,[3],4,5];
+
+let maxDepth=(inputArr)=>{
+    let result=0;
+  	let depth=0;
+  	for(let i=0;i<inputArr.length;i++){
+      if(typeof(inputArr[i])=="number"){
+        depth=1;
+      }
+      else {
+        depth=1+maxDepth(inputArr[i]);
+      
+	  }
+      result=Math.max(depth,result);
+    }
+    return result;
+}
+  
+
+console.log(maxDepth(myArr)) ;

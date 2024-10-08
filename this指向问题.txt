@@ -1,0 +1,88 @@
+<script>
+var greeting="welcome";
+function sayHello(user){
+  console.log(this.greeting+","+user);
+}
+sayHello("xiaoming");	// welcome,xiaoming 相当于执行window.sayHello()  而window就是他的上文 即this=obj
+</script>
+
+
+<script>
+var greeting="welcome";
+function sayHello(user){
+  this.greeting="hello";  //加了这一句 代表重新更改了this.greeting的值，但是this依然指向window
+  console.log(this.greeting+","+user);
+}
+sayHello("xiaoming");  // hello,xiaoming
+</script>
+
+
+
+<script>
+var greeting="welcome";
+function sayHello(user){
+  console.log(this.greeting+","+user);
+}
+
+var obj={
+	greeting:"hello",
+	user:"xiaojun",
+	sex:"male",
+	sayHello:sayHello
+}
+obj.sayHello("xiaohong");  //hello,xiaohong      // 前文是obj 所以this指向的是this 即this=obj
+</script>
+
+
+
+<script>
+var greeting="welcome";  //let  greeting="welcome";  则输出undefined
+var obj={
+	greeting:"hello",
+	user:"xiaojun",
+	sex:"male",
+	sayHello:function(){
+		setTimeout(function(){console.log(this.greeting)},2000);   //注意setTimeOut里面加function(){} 才是正确写法
+	}
+}
+obj.sayHello();  //"welcome"      // setTimeout之间的函数 是异步执行的 。等所有任务执行完后 才会回调sayhello函数执行，此时已经跳出obj对象。而是 window.sayHello();
+</script>
+
+
+
+<script>
+var greeting="welcome";
+function sayHello(user){
+  console.log(this.greeting+","+user);
+}
+
+var obj={
+	greeting:"hello",
+	user:"xiaojun",
+	sex:"male",
+	objSayHello:sayHello
+}
+
+sayHello("xiaohong");  //welcome,xiaohong
+let newFun=sayHello.bind(obj);  //把"window.sayHello()" 改成"obj.sayHello()"
+newFun("xiaohong");  //hello,xiaohong
+</script>
+
+
+<script>
+var greeting="welcome";
+var obj={
+	greeting:"hello",
+	user:"xiaojun",
+	sex:"male",
+	sayHello:function(){
+		setTimeout(function(){console.log(this.greeting)}.bind(this),2000);   
+	}
+}
+
+//此时的obj.sayHello()在执行时已经跳出obj，但是其this已经obj进行了绑定
+obj.sayHello();  //"hello"      
+</script>
+
+
+
