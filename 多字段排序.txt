@@ -1,0 +1,19 @@
+let array = [["AB",25,170],["AB",22,179],["AC",32,179],["CAB",26,180],["AC",32,178],["FAB",32,170]];
+
+// 多字段排序，首先按照 'name' 升序，然后按照 'age' 升序，最后按照 'score' 升序
+//注意，js中对与字符串的比较，默认根据字符串的ASCII码大小进行比较，并且如果第一个字符相同，会自动比较第二个字符的ASCII码
+array.sort((a, b) => {
+  if (a[0] < b[0]) return -1;//小于0 则让a排在b前面；
+  else if (a[0] > b[0]) return 1;//大于0 则让a排在b后面；
+  else{  //a[0] == b[0] 名称相等，根据年龄升序排
+      if (a[1] < b[1]) return -1;
+  	  else if (a[1] > b[1]) return 1;
+      else{//a[1] == b[1] 年龄相等，根据身高升序排
+        if (a[2] < b[2]) return -1;
+  	    else if (a[2] >b[2]) return 1;
+        else  return 0; // 名称 年龄 升高都相等时不改变顺序
+      }
+  }  
+});
+
+console.log(array);

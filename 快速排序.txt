@@ -8,7 +8,7 @@ let quickSort=(nums,left,right)=>{
     let end=right;
   	let base=left;//以左指针为基准值
   	while(start<end){
-      while(start<end&&nums[end]>=nums[base]){
+      while(start<end&&nums[end]>=nums[base]){ //得先写end这块
         end--;
       }
       while(start<end&&nums[start]<=nums[base]){
