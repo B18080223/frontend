@@ -1,0 +1,21 @@
+//四舍五入至小数点后两位
+let num = 123.556;
+let str = num.toFixed(2);
+console.log(str);//"123.56"
+console.log(parseFloat(str));//123.56
+console.log(Math.floor(parseFloat(str)));//123,去尾（向下取）
+console.log(Math.ceil(parseFloat(str)));//124,四舍五入
+console.log(Math.floor(parseFloat(-1.3)));//-2,去尾
+console.log(Math.ceil(parseFloat(-1.3)));//-1,四舍五入
+
+
+
+//十进制的数 转16进制（其他进制同理 ）的字符串
+let numA=123;
+let strA = numA.toString(16);
+console.log(strA); //7b
+
+//二进制字符串数转十进制数值
+let  strBin="01001";
+let numB =parseInt(strBin,2);
+console.log(numB);//9
