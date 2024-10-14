@@ -79,6 +79,13 @@
 	//clip-path: polygon(0 0, 0 100%, 100% 100%);/*每个点没有顺序  每个坐标先定义x 再定义y 左上角位坐标原点（0,0） 右下角位（100% 100%）*/ 
 }
 
+.box{
+	width:500px;
+	height:200px;
+	background: gray;
+	margin:auto;
+	position:relative;
+}
 </style>
 
 
@@ -106,7 +113,7 @@ console.log(Object.prototype.toString.call(Fn)); //function
 
 <body id="myBody" >
 
- <div id="container" >
+ <div id="container" id="top">
 
   <div id="header" >
 
@@ -117,7 +124,14 @@ console.log(Object.prototype.toString.call(Fn)); //function
 </div>
 
 <div id="triangle">
+
 </div>
- 
+<div class="box" id="section1">
+ <p>1</p>
+ </div>
+<div class="box" id="section2">
+ <p>2</p>
+</div>
+ <a href="#top">锚点1</a>
 </body>
 </html>
