@@ -1,0 +1,22 @@
+//hash模式的监听
+window.addEventListener('hashchange', function() { console.log('hash值被修改了');}, false);  
+//false表示实在冒泡阶段执行，true代表捕获阶段
+
+function locationHashChanged() {
+  if (window.location.hash === '#/about') {
+    console.log("欢迎进入about页面");
+  }
+}
+window.onhashchange = locationHashChanged;//使用 onhashchange 事件处理程序
+
+//history模式的监听
+window.addEventListener('popstate', function(event) {console.log(event);}, false);
+
+
+function historyStateChanged(event) {
+   if (window.location.href === 'xxxx') {
+    console.log("xxx");
+  }
+
+}
+window.onpopstate= historyStateChanged;//使用 onpopstate 事件处理程序
