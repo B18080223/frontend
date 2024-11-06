@@ -1,0 +1,7 @@
+//setInterval方法
+let count=0;
+let funA=setInterval(
+  ()=>{
+    console.log(count++)
+    if(count>5) clearInterval(funA);
+  },1000);

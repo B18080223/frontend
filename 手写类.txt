@@ -13,3 +13,32 @@ class Person{
 
 let studentA=new Person("小明","男");
 studentA.getName();
+
+
+
+
+function Person(name,gender){
+  this.gender=gender;
+  this.name=name;
+}
+console.log(Person);//只有name和gender
+
+//Person.prototype指向一个空的object实例，而这个实例的构造函数又指向构造函数，这说明构造函数和原型对象之间互相引用
+Person.prototype.getName=function() {console.log("name:"+this.name);};
+let studentA=new Person("小明","男");
+let studentB=new Person("小红","女");
+console.log(studentA.name);//小明"
+studentA.getName();//"name:小明"
+
+//studentB.prototype.getGender=function() {console.log("gender:"+this.gender);};//会报错，只有构造函数才可以使用prototype
+studentB.__proto__.getGender=function() {console.log("gender:"+this.gender);};
+studentB.getGender();//"gender:女"
+studentA.getGender();//"gender:男"
+console.log(studentB);//只有name和gender
+console.log(studentB.__proto__);//有getname和getgender
+console.log(Person);//只有name和gender
+
+let studentC={};
+studentC.__proto__=studentA;
+console.log(studentC);///只有name 小明和gender 男
+studentC.getGender();//gender:男
