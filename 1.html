@@ -106,6 +106,8 @@ console.log(zr.greeting ); //weclome
 console.log(zr.username ); //小明
 console.log(Object.prototype.toString.call(zr)); //object
 console.log(Object.prototype.toString.call(Fn)); //function
+
+
 </script>
 
 
@@ -133,5 +135,21 @@ console.log(Object.prototype.toString.call(Fn)); //function
  <p>2</p>
 </div>
  <a href="#top">锚点1</a>
+ 
+ 
+ <ol id="list">
+  <li>Item 1</li>
+  <li>Item 2</li>
+  <li>Item 3</li>
+</ol>
 </body>
+
+<script>
+let ul = document.getElementById('list');
+ul.addEventListener('click', (event) => {
+  if (event.target.tagName === 'LI') {
+    console.log(event.target.textContent);
+  }
+});
+</script>
 </html>

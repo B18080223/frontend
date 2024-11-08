@@ -3,6 +3,7 @@ class Emitter {
     constructor() {
         this.sub = {};
     }
+    //发布
     $emit(event, argumnets) {
         const events = this.sub[event];
         console.log(event, argumnets);
@@ -10,6 +11,7 @@ class Emitter {
             cb(argumnets);
         });
     }
+    //订阅
     $on(event, callback) {
         if (!this.sub[event]) {
             this.sub[event] = [];
