@@ -1,0 +1,52 @@
+// 下面的代码将输出什么？请解释为什么。
+
+//示例一
+function someFunction() {
+  let a = 100
+  return function () {
+    return a++；
+  }
+}
+
+
+let f1 = someFunction()；
+let f2 = someFunction()；
+
+
+console.log(f1())；//100
+console.log(f2())；//100
+
+
+
+//示例二
+function someFunction() {
+  let a = 100;
+  function s(){
+	a=a+1;
+    return a;
+  }
+  return s;
+}
+
+let f = someFunction();
+console.log(f());//101
+console.log(f());//102
+
+
+
+
+
+
+//示例三
+
+function f(){
+	var name="zhangsan";
+	function s(){
+		console.log("abb",name);
+	}
+	return s;
+}
+
+var ff=f();
+ff();  //abb zhangsan
+
