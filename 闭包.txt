@@ -50,3 +50,36 @@ function f(){
 var ff=f();
 ff();  //abb zhangsan
 
+//示例四
+function say667() {
+    // Local variable that ends up within closure
+    let num = 666;
+    let sayAlert = function() {
+        console.log("内层变量",num); 
+        
+    }
+    num++;
+    console.log("外层变量",num); //667 只在new 构造函数的时候执行 
+    return sayAlert;
+}
+
+let sayAlert = new say667();
+sayAlert()//执行结果应该弹出的667
+sayAlert()//执行结果应该弹出的667
+
+//示例五
+function say667() {
+    // Local variable that ends up within closure
+    let num = 666;
+    let sayAlert = function() {
+        console.log("内层变量",num); 
+        num++;
+    }
+   
+    console.log("外层变量",num); //666 只在new 构造函数的时候执行 
+    return sayAlert;
+}
+
+let sayAlert = new say667();
+sayAlert()//执行结果应该弹出的666
+sayAlert()//执行结果应该弹出的667
