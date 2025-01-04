@@ -15,7 +15,7 @@ let buildTree=(arr,pid)=>{
   	for(let item of arr){
     	if(item.parent_id==pid){  //找到这个父节点的子节点
           let child=buildTree(arr,item.id);//递归去寻找这个子节点对应的子树
-          if(child.length>0) item.child=child;
+          if(child.length>0) item[child]=child;
           result.push(item);
         }
     }
