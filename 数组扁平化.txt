@@ -1,0 +1,13 @@
+let myArr=[1,[2,3],4,[5,[6,7]]];
+//console.log(myArr.flat(Infinity));
+
+let result=[];
+let flatArr=(arr)=>{
+  for(let el of arr){
+    if(typeof(el)=="object")  flatArr(el);
+    else result.push(el); 
+  }
+}
+
+flatArr(myArr);
+console.log(result);

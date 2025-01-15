@@ -1,0 +1,52 @@
+//call
+let funA=function(name){
+	this.name=name;
+    console.log(this.name,this.age);
+}
+
+let objB={
+	name:"小红",
+	age:12
+}
+
+funA("小明"); //this指向window对象  "小明" undefined
+
+funA.call(objB,"小军");// "小军" 12  必须接受一个对象obj 而不是函数
+funA.call(objB); //undefined 12
+
+//apply
+let funA=function(name,age){
+	this.name=name;
+    this.age=age;
+    console.log(this.name,this.age,this.gender);
+}
+
+let objB={
+	name:"小红",
+	age:5,
+    gender:"female"
+}
+
+funA("小明",10); //this指向window对象  "小明" 10 undefined
+
+funA.apply(objB,["小军",18]);// 小军" 18 "female"
+funA.call(objB); //undefined undefined "female"
+
+//bind
+let funA=function(name,age){
+	this.name=name;
+    this.age=age;
+    console.log(this.name,this.age,this.gender);
+}
+
+let objB={
+	name:"小红",
+	age:5,
+    gender:"female"
+}
+
+funA("小明",10); //this指向window对象  "小明" 10 undefined
+
+let newFun=funA.bind(objB,"小军",18);// 不执行，创建了一个新的函数 而不是对象
+console.log(typeof newFun); //function
+newFun("xx",12,);//"小军",18,female 不接受改变的入参

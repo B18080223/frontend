@@ -1,0 +1,24 @@
+//结合“手写类”这个代码一起看
+
+
+function F() { }
+Object.prototype.a = function a() {
+  console.log('a');
+}
+Function.prototype.b = function b() {
+  console.log('b');
+}
+
+let f = new F();
+
+console.log(Object.prototype.toString.call(f));//[object Object]
+console.log(Object.prototype.toString.call(F));//[object Function] 
+
+
+//Function继承自Object   Object。prototype是js原型链的顶点
+//所以 “a” “b”这个函数会被作为Object的f继承，但是b这个函数只能被作为Function的F继承
+
+f.a();  //a
+//f.b(); //无法执行
+F.a();	//a
+F.b();	//b

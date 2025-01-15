@@ -1,6 +1,6 @@
 //hash模式的监听
 window.addEventListener('hashchange', function() { console.log('hash值被修改了');}, false);  
-//false表示实在冒泡阶段执行，true代表捕获阶段
+//true代表在捕获阶段执行，false表示在冒泡阶段
 
 function locationHashChanged() {
   if (window.location.hash === '#/about') {
