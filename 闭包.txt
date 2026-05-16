@@ -40,15 +40,15 @@ console.log(f());//102
 //示例三
 
 function f(){
-	var name="zhangsan";
-	function s(){
+	var name="zhangsan";   // 执行：赋值
+	function s(){          // 不执行：只是定义了一个函数，存在内存里
 		console.log("abb",name);
 	}
-	return s;
+	return s;              // 执行：把函数s作为值返回出去
 }
 
-var ff=f();
-ff();  //abb zhangsan
+var ff=f();  // f()执行时：赋值name → 定义s → 返回s，此时s内部代码不会运行
+ff();  //abb zhangsan  ← 这时候s才真正被调用执行
 
 
 //示例四

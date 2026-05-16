@@ -42,3 +42,38 @@ let studentC={};
 studentC.__proto__=studentA;
 console.log(studentC);///只有name 小明和gender 男
 studentC.getGender();//gender:男
+
+// 核心图示：
+//
+//  构造函数 Person ----prototype----> Person.prototype（原型对象）
+//       |                                |         ^
+//       |                                | constructor（互相引用）
+//       |                                v         |
+//       |                            Person <------+
+//       |                                |
+//       |  new Person()                  | 存放共享方法：getName、getGender
+//       |                                |
+//       v                                |
+//  studentA: { name:"小明", gender:"男" }  |
+//       |                                |
+//       +--------__proto__---------------+
+//                                        |
+//  studentB: { name:"小红", gender:"女" }  |
+//       |                                |
+//       +--------__proto__---------------+
+//
+//
+//  属性查找顺序（原型链）：
+//  studentA.getGender()
+//    -> studentA 自身有吗？没有
+//    -> studentA.__proto__（即 Person.prototype）有吗？有！执行它
+//
+//
+//  studentC 的原型链（__proto__ 指向 studentA）：
+//  studentC -> studentA -> Person.prototype -> Object.prototype -> null
+//
+//
+//  关键区别：
+//  prototype   —— 只有构造函数才有，指向原型对象
+//  __proto__   —— 所有实例都有，指向构造函数的 prototype
+//  两者指向同一个对象：studentA.__proto__ === Person.prototype  // true

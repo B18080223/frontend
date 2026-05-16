@@ -8,3 +8,25 @@ function debounce(fn,delay){
         timer = setTimeout(fn,delay)
     }
 }
+
+
+
+//节流
+// 原理：第一次触发开始计时，delay时间内的后续触发全部忽略，冷却结束后才允许下一次执行
+// 类比：技能CD — 释放一次后进入冷却，冷却期间按再多次也没用
+// 场景：滚动事件、按钮防重复点击、拖拽
+function throttle(fn, delay) {
+    let timer = null;
+    return function() {
+        if (timer) return;           // 正在冷却中，直接忽略
+        timer = setTimeout(() => {
+            fn();
+            timer = null;            // 冷却结束，允许下次执行
+        }, delay);
+    }
+}
+
+// 对比：
+// 连续触发事件：| | | | | | | | | |
+// 防抖：                              |   ← 等你停下来，只执行最后一次
+// 节流：  |       |       |       |       ← 固定间隔执行一次

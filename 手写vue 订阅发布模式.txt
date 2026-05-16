@@ -1,29 +1,48 @@
-vue 订阅发布模式
+// Vue 订阅发布模式（EventBus）
+// 核心思想：一个事件中心，组件A订阅事件，组件B触发事件，实现解耦通信
+
 class Emitter {
     constructor() {
-        this.sub = {};
+        this.sub = {};  // 事件存储中心，结构：{ 事件名: [回调1, 回调2, ...] }
     }
-    //发布
+
+    // 发布（触发事件）— 找到该事件的所有回调，逐个执行并传入参数
     $emit(event, argumnets) {
         const events = this.sub[event];
-        console.log(event, argumnets);
+        if (!events) return;  // 防御：没人订阅该事件时不报错
         events.forEach(cb => {
             cb(argumnets);
         });
     }
-    //订阅
+
+    // 订阅（监听事件）— 把回调函数存入对应事件的数组中
     $on(event, callback) {
         if (!this.sub[event]) {
-            this.sub[event] = [];
+            this.sub[event] = [];  // 第一次订阅该事件，初始化数组
         }
         this.sub[event].push(callback);
     }
 }
+
+// 使用示例
 const eventBus = new Emitter();
- 
+
+// 订阅：监听 'setName' 事件
 eventBus.$on('setName', (value) => {
-    console.log(value, 90)
+    console.log(value, 90);
 });
+
+// 1秒后发布：触发 'setName' 事件，所有订阅者的回调都会执行
 setTimeout(() => {
     eventBus.$emit('setName', {name: 67});
-}, 1000)
+}, 1000);
+// 1秒后输出：{name: 67} 90
+
+// 数据流向：
+// $on('setName', callback)  → sub = { setName: [callback] }（注册）
+// $emit('setName', data)    → 找到 sub['setName']，执行所有回调，传入 data
+
+// 注意：
+// 1. $emit/$on 中的 $ 是 Vue 的命名约定，表示框架实例方法，不是特殊语法
+// 2. class 中定义方法不需要写 function 关键字，这是 ES6 强制语法规则
+// 3. Vue 3 移除了内置事件总线，推荐用 mitt 库或 pinia 替代，但底层原理一样

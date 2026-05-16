@@ -15,8 +15,20 @@ console.log(Object.prototype.toString.call(f));//[object Object]
 console.log(Object.prototype.toString.call(F));//[object Function] 
 
 
-//Function继承自Object   Object。prototype是js原型链的顶点
-//所以 “a” “b”这个函数会被作为Object的f继承，但是b这个函数只能被作为Function的F继承
+// a 定义在 Object.prototype 上，是原型链的顶端，所以 f 和 F 都能访问
+// b 定义在 Function.prototype 上，只有函数（如 F）的原型链经过这里，所以只有 F 能访问，f 访问不到
+// 因为 new F() 创建的 f 是一个普通对象，原型链是：f -> F.prototype -> Object.prototype -> null
+// 而 F 本身是函数，原型链是：F -> Function.prototype -> Object.prototype -> null
+//
+// 核心图示：
+//                         null
+//                          |
+//                   Object.prototype  <- 定义了 a()，所有对象都能访问
+//                      |         |
+//           Function.prototype    F.prototype
+//           (定义了 b())            |
+//                |                 f（实例，普通对象）
+//                F（函数）
 
 f.a();  //a
 //f.b(); //无法执行

@@ -16,7 +16,21 @@ function shallowClone(obj){
 console.log(shallowClone(obj));
 
 
-//深拷贝 递归复制第一层 拷贝对象多层的属性、
+//深拷贝（简化版，无循环引用处理）
+let obj={a:1,b:2,c:{d:4,e:5,f:{g:6}}};
+function deepClone(obj){
+    if(typeof(obj)!='object'||obj==null) return obj;
+    let result={};
+    for(let key in obj){
+      result[key]=deepClone(obj[key]);
+    }
+    return result;
+}
+console.log(deepClone(obj));
+// 注意：这个版本如果遇到循环引用（如 obj.self = obj）会无限递归导致栈溢出
+
+
+//深拷贝（完整版，用Map处理循环引用）
 
 let obj={a:1,b:2,c:{d:4,e:5,f:{g:6}}};  //Object { a: 1, b: 2, c: Object { d: 4, e: 5, f: Object { g: 6 } } }
 console.log(obj);
