@@ -1,6 +1,8 @@
 //call
+// call 的语法：fn.call(thisArg, arg1, arg2, ...)
+// 第一个参数指定 this 指向，后续参数依次传给函数，立即执行
 let funA=function(name){
-	this.name=name;
+	this.name=name;  // 注意：这是赋值操作，会用形参 name 覆盖 this.name
     console.log(this.name,this.age);
 }
 
@@ -9,10 +11,10 @@ let objB={
 	age:12
 }
 
-funA("小明"); //this指向window对象  "小明" undefined
+funA("小明"); //this指向window对象  "小明" undefined（window.age不存在）
 
-funA.call(objB,"小军");// "小军" 12  必须接受一个对象obj 而不是函数
-funA.call(objB); //undefined 12
+funA.call(objB,"小军");// "小军" 12  this指向objB，name形参="小军"，objB.name被覆盖为"小军"
+funA.call(objB); //undefined 12  没传name参数，形参name=undefined，objB.name被覆盖为undefined，不会使用objB原有的name值
 
 //apply
 let funA=function(name,age){
@@ -33,6 +35,8 @@ funA.apply(objB,["小军",18]);// 小军" 18 "female"
 funA.call(objB); //undefined undefined "female"
 
 //bind
+// bind 的语法：fn.bind(thisArg, arg1, arg2, ...)
+// 不立即执行，返回一个新函数，this 和预设参数被永久绑定
 let funA=function(name,age){
 	this.name=name;
     this.age=age;
@@ -49,4 +53,13 @@ funA("小明",10); //this指向window对象  "小明" 10 undefined
 
 let newFun=funA.bind(objB,"小军",18);// 不执行，创建了一个新的函数 而不是对象
 console.log(typeof newFun); //function
-newFun("xx",12,);//"小军",18,female 不接受改变的入参
+newFun("xx",12);//"小军" 18 "female"
+// 为什么不接受改变的入参？
+// bind时已经预设了 name="小军", age=18，这两个参数位置已被占用
+// 调用时传的 "xx" 和 12 会排在预设参数后面（变成第3、第4个参数），不会覆盖前面的
+// 等价于：funA.call(objB, "小军", 18, "xx", 12)  ← "xx"和12是多余参数，被忽略
+// 这个特性叫"偏函数（partial application）"
+
+// 如果想让调用时能自由传参，bind时就不要预设参数：
+let newFun2=funA.bind(objB);  // 只绑定this，不预设参数
+newFun2("xx",12);// "xx" 12 "female"  ← 此时可以正常传入自己的参数
