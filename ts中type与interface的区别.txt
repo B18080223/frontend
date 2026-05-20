@@ -1,0 +1,29 @@
+// 接口
+interface myRes {
+  code:number,
+  name:string
+}
+
+const res:myRes ={
+  code:1,
+  name:'first'
+}
+
+console.log(res.code,res.name) // 1,  "first" 
+
+// type，别名
+type code = string |number
+// const tempCode : code = '1'
+const tempCode : code = 1
+console.log('tempCode',tempCode) // 1
+
+// 区别：interface 只支持定义对象，不支持定义其他类型。type可以定义任何类型（联合类型、元组、函数类型等）
+// https://www.runoob.com/typescript/ts-type-alias.html
+
+// interface status = number // 没这种写法
+
+// 要加等号
+type apiResponse = {
+  code:number|string
+  content:string
+}
