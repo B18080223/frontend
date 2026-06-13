@@ -86,3 +86,45 @@ obj.sayHello();  //"hello"
 
 
 
+
+
+
+
+//箭头函数的this指向
+//核心规则：箭头函数没有自己的this，继承定义时外层作用域的this。且无法被call/apply/bind改变。
+//注意：对象的 {} 不是作用域！只有函数的 {} 才是作用域。
+
+//示例一：箭头函数定义在对象字面量中
+var name = "window";
+var obj = {
+  name: "obj",
+  sayHi: function() {
+    console.log(this.name);
+  },
+  sayHiArrow: () => {
+    console.log(this.name);
+  }
+}
+obj.sayHi();       // "obj"    — 普通函数，obj调用所以this=obj
+obj.sayHiArrow();  // "window" — 箭头函数，对象{}不是作用域，外层是全局，this=window
+
+
+//示例二：箭头函数定义在函数作用域中（setTimeout经典场景）
+var greeting = "welcome";
+var obj2 = {
+  greeting: "hello",
+  sayHello: function() {
+    setTimeout(() => {
+      console.log(this.greeting);
+    }, 1000);
+    // 箭头函数的外层是sayHello函数作用域，sayHello被obj2调用，所以this=obj2
+  }
+}
+obj2.sayHello();  // "hello"（不是"welcome"！箭头函数继承了sayHello的this=obj2）
+
+
+//示例三：箭头函数无法被call/apply/bind改变this
+var fn = () => { console.log(this.name); }
+fn.call({name: "obj"});   // "window" — call无效
+fn.apply({name: "obj"});  // "window" — apply无效
+fn.bind({name: "obj"})(); // "window" — bind无效
