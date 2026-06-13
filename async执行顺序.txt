@@ -1,21 +1,40 @@
-const myPromise = Promise.resolve(Promise.resolve("promise"));
+const myPromise = Promise.resolve(Promise.resolve("promise")); // 同步：创建已resolve的Promise
 
 function funOne(){
   setTimeout(()=>{
-    console.log("setTimeout1")
-  },0);
-   myPromise.then(res => res).then(res => console.log(res));
-   console.log("Lastline1!")
+    console.log("setTimeout1")        // 宏任务①：最后执行
+  },0);                                // 同步：注册setTimeout，回调进宏任务队列
+  myPromise.then(res => res)           // 同步：注册then，回调进微任务队列[B]
+           .then(res => console.log(res)); // 微任务D：B执行完后才入队，打印 "promise"
+  console.log("Lastline1!")            // 同步：打印 ✅ 第1个输出
 }
 
 async function funTwo() {
-	const res = await myPromise;
-        setTimeout(() =>{
-		console.log("setTimeout2");
-	},0)
-  	const a = await res;
-	console.log("two",a)
-	console.log("Lastline2!")
+  const res = await myPromise;         // 同步：执行到这里暂停，后续代码进微任务队列[A]
+  setTimeout(() =>{
+    console.log("setTimeout2");        // 宏任务②：最后执行
+  },0)                                 // 微任务A执行时：注册setTimeout
+  const a = await res;                 // 微任务A执行时：遇到第二个await，后续进微任务队列[C]
+  console.log("two", a)                // 微任务C：打印 "two promise" ✅
+  console.log("Lastline2!")            // 微任务C：打印 "Lastline2!" ✅
 }
-funTwo();
-funOne();
+
+funTwo();                              // 同步：调用funTwo，执行到第一个await暂停
+funOne();                              // 同步：调用funOne，执行完同步代码
+
+// 执行顺序：
+// 同步阶段：       Lastline1!
+// 微任务A（funTwo第一个await恢复）→ 注册setTimeout2 → 遇到第二个await → 产生C
+// 微任务B（第一个then）→ 返回"promise" → 产生D
+// 微任务C（funTwo第二个await恢复）→ two promise → Lastline2!
+// 微任务D（第二个then）→ promise
+// 宏任务①：setTimeout1
+// 宏任务②：setTimeout2
+
+// 最终输出：
+// Lastline1!
+// two promise
+// Lastline2!
+// promise
+// setTimeout1
+// setTimeout2
