@@ -1,0 +1,52 @@
+// 手写Promise函数
+// @param [promise1, promise2, ...]
+// @return promise
+Promise.myAll = (params) =>{
+    let res = null
+    let rej = null // 保存响应结果
+    let promise = new Promise((resolve,reject)=>{
+        res = resolve
+        rej = reject
+    })
+    let result = [] //存储结果
+    let count = 0 //计数器
+    // 遍历请求数组
+    for(let item of params){
+        let index = count
+        count++
+        //Promise.resolve 统一包装成Promise结构
+        Promise.resolve(item).then((data) =>{
+            result[index] = data
+            count--
+            if(count === 0) res(result)
+        },rej) //有一个失败则直接返回
+    }
+    // 特殊情况
+    if (params.length === 0){
+        res([]) //返回成功状态的下的空数组
+    }
+    return promise
+}
+
+console.log('测试 : 其中一个 Promise 失败');
+Promise.myAll([
+  Promise.resolve(1),
+  Promise.reject('错误信息'),
+  Promise.resolve(3)
+]).then(
+  res => console.log('不应到达这里'),
+  err => {
+    console.log('捕获错误:', err); // '错误信息'
+    console.log('✓ 测试通过');
+  }
+);
+
+console.log('测试 : 所有 Promise 成功');
+Promise.myAll([
+  Promise.resolve(1),
+  Promise.resolve(2),
+  Promise.resolve(3)
+]).then(res => {
+  console.log('结果:', res); // [1, 2, 3]
+  console.log('✓ 测试通过');
+});
