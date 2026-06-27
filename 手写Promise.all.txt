@@ -1,33 +1,41 @@
-// 手写Promise函数
+// 手写Promise.all函数
 // @param [promise1, promise2, ...]
 // @return promise
 Promise.myAll = (params) =>{
     let res = null
-    let rej = null // 保存响应结果
+    let rej = null
+    // 创建一个新的Promise，将resolve和reject存到外部变量
+    // 这样可以在.then回调中（另一个函数作用域）控制这个Promise的状态
     let promise = new Promise((resolve,reject)=>{
         res = resolve
         rej = reject
     })
-    let result = [] //存储结果
-    let count = 0 //计数器
+    let result = [] //存储结果（按输入顺序）
+    let count = 0 //已完成的数量
+
     // 遍历请求数组
-    for(let item of params){
-        let index = count
-        count++
-        //Promise.resolve 统一包装成Promise结构
-        Promise.resolve(item).then((data) =>{
-            result[index] = data
-            count--
-            if(count === 0) res(result)
-        },rej) //有一个失败则直接返回
+    // 这里用 let i，每次循环创建独立的 i（块级作用域）
+    // 每个.then回调闭包了各自的 i 值（0、1、2...），互不影响
+    for(let i=0;i<params.length;i++){
+        // Promise.resolve统一包装：兼容传入非Promise的值（如普通数字）
+        // 注册阶段（同步）：只是定义回调函数并存起来，不执行回调内容
+        // 执行阶段（异步）：Promise resolve后，回调进入微任务队列，主线程空闲时执行
+        Promise.resolve(params[i]).then((data) =>{
+            result[i] = data  // 用闭包中的i定位，保证结果顺序和输入顺序一致
+                              // 不能用count，因为count是共享变量，值在不断变化
+                              // 而i是每个回调独立的闭包副本，值固定不变
+            count++ // 每完成一个加一
+            if(count === params.length) res(result) // 全部完成才resolve
+        },rej) // 第二个参数：有一个失败则整体立即reject
     }
-    // 特殊情况
+    // 特殊情况：空数组直接返回成功
     if (params.length === 0){
-        res([]) //返回成功状态的下的空数组
+        res([])
     }
     return promise
 }
 
+// 测试1：其中一个Promise失败
 console.log('测试 : 其中一个 Promise 失败');
 Promise.myAll([
   Promise.resolve(1),
@@ -41,6 +49,7 @@ Promise.myAll([
   }
 );
 
+// 测试2：所有Promise成功
 console.log('测试 : 所有 Promise 成功');
 Promise.myAll([
   Promise.resolve(1),
