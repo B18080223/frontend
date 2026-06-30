@@ -30,3 +30,41 @@ function throttle(fn, delay) {
 // 连续触发事件：| | | | | | | | | |
 // 防抖：                              |   ← 等你停下来，只执行最后一次
 // 节流：  |       |       |       |       ← 固定间隔执行一次
+
+
+
+// ========== 完整版（考虑 this 指向和参数传递）==========
+// 面试时推荐写这个版本，阿里面试官曾指出上面简单版的 this 指向问题
+
+// 防抖（完整版）
+// 为什么用 fn.call(this, ...args)：
+//   setTimeout(fn, delay) 中 fn 被独立调用，this 指向 window，参数丢失
+//   用箭头函数包裹 + call 保持外层 this 指向，...args 原封不动转交参数
+function debounce_v2(fn, delay) {
+  let timer = null;
+  return function (...args) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.call(this, ...args);  // 保持 this 指向和参数
+    }, delay);
+  }
+}
+
+// 节流（完整版）
+function throttle_v2(fn, delay) {
+  let timer = null;
+  return function (...args) {
+    if (timer) return;
+    timer = setTimeout(() => {
+      fn.call(this, ...args);
+      timer = null;
+    }, delay);
+  }
+}
+
+// 验证 this 指向的例子：
+// const obj = {
+//   name: '张三',
+//   sayHi: debounce_v2(function() { console.log(this.name); }, 300)
+// };
+// obj.sayHi();  // 简单版：undefined（this=window） | 完整版：'张三'（this=obj）
