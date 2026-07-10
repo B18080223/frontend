@@ -1,4 +1,4 @@
-// Promise调度器
+// 9. Promise调度器
 // 一个个去添加任务 add方法
 // 添加任务后会触发 执行函数run
 // 最多并发执行maxCount个任务
@@ -18,15 +18,10 @@ class Scheduler {
       rej = reject;
     });
     // 惰性执行，shift弹出之后才会执行
-    this.queue.push(() => {
-      Promise.resolve(typeof task === "function" ? task() : task)
-        .then((data) => {
-          res(data);
-        })
-        .catch((err) => {
-          rej(err);
-        });
-      return myPromise;
+    this.queue.push({
+      curTask: task,
+      taskResolve: res,
+      taskReject: rej,
     });
     this.run(); //触发run去执行任务
     return myPromise;
@@ -35,11 +30,19 @@ class Scheduler {
     // 控制队列的数量
     if (!this.queue.length || this.runningCount >= this.maxCount) return;
     this.runningCount++;
-    const curTask = this.queue.shift();
-    curTask().finally(() => {
-      this.runningCount--;
-      this.run(); // 无论执行成功还是失败，腾出空位给下一个执行
-    });
+    const curTaskObj = this.queue.shift();
+    const { curTask, taskResolve, taskReject } = curTaskObj;
+    Promise.resolve(typeof curTask === "function" ? curTask() : curTask)
+      .then((data) => {
+        taskResolve(data);
+      })
+      .catch((error) => {
+        taskReject(error);
+      })
+      .finally(() => {
+        this.runningCount--;
+        this.run(); // 无论执行成功还是失败，腾出空位给下一个执行
+      });
   }
 }
 
