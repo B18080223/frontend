@@ -1,29 +1,33 @@
-//防抖 
-function debounce(fn,delay){ 
-      let timer = null //借助闭包
-     return function() {
-        if(timer){
-            clearTimeout(timer) 
-        }
-        timer = setTimeout(fn,delay)
-    }
+// ========== 防抖（debounce）==========
+// 原理：连续触发时，只执行最后一次（等你停下来才执行）
+// 场景：搜索框输入、窗口 resize
+
+// 简单版（有 this 指向问题，面试时说明即可）
+function debounce_simple(fn, delay) {
+  let timer = null;
+  function debounced() {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(fn, delay);
+  }
+  return debounced;
 }
 
 
-
-//节流
+// ========== 节流（throttle）==========
 // 原理：第一次触发开始计时，delay时间内的后续触发全部忽略，冷却结束后才允许下一次执行
 // 类比：技能CD — 释放一次后进入冷却，冷却期间按再多次也没用
 // 场景：滚动事件、按钮防重复点击、拖拽
-function throttle(fn, delay) {
-    let timer = null;
-    return function() {
-        if (timer) return;           // 正在冷却中，直接忽略
-        timer = setTimeout(() => {
-            fn();
-            timer = null;            // 冷却结束，允许下次执行
-        }, delay);
-    }
+
+function throttle_simple(fn, delay) {
+  let timer = null;
+  function throttled() {
+    if (timer) return; // 正在冷却中，直接忽略
+    timer = setTimeout(() => {
+      fn();
+      timer = null; // 冷却结束，允许下次执行
+    }, delay);
+  }
+  return throttled;
 }
 
 // 对比：
@@ -32,34 +36,34 @@ function throttle(fn, delay) {
 // 节流：  |       |       |       |       ← 固定间隔执行一次
 
 
-
 // ========== 完整版（考虑 this 指向和参数传递）==========
-// 面试时推荐写这个版本，阿里面试官曾指出上面简单版的 this 指向问题
-
-// 防抖（完整版）
+// 面试时推荐写这个版本
 // 为什么用 fn.call(this, ...args)：
 //   setTimeout(fn, delay) 中 fn 被独立调用，this 指向 window，参数丢失
 //   用箭头函数包裹 + call 保持外层 this 指向，...args 原封不动转交参数
+
 function debounce_v2(fn, delay) {
   let timer = null;
-  return function (...args) {
+  function debounced(...args) {
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
-      fn.call(this, ...args);  // 保持 this 指向和参数
+      fn.call(this, ...args);
+      timer = null; // 执行完后释放引用
     }, delay);
   }
+  return debounced;
 }
 
-// 节流（完整版）
 function throttle_v2(fn, delay) {
   let timer = null;
-  return function (...args) {
+  function throttled(...args) {
     if (timer) return;
     timer = setTimeout(() => {
       fn.call(this, ...args);
       timer = null;
     }, delay);
   }
+  return throttled;
 }
 
 // 验证 this 指向的例子：
@@ -70,61 +74,52 @@ function throttle_v2(fn, delay) {
 // obj.sayHi();  // 简单版：undefined（this=window） | 完整版：'张三'（this=obj）
 
 
-
-
 // ========== 进阶优化（面试加分项）==========
 
-// 优化1：timer 执行后置 null，避免内存泄漏
-// setTimeout 执行完后，timer 里存的 ID 已经无效了
-// 置 null 表示"当前没有待执行的定时器"，语义更清晰，也方便 GC
-function debounce_v3(fn, delay) {
-  let timer = null;
-  return function (...args) {
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(() => {
-      fn.call(this, ...args);
-      timer = null;  // 执行完后释放引用
-    }, delay);
-  }
-}
-
-// 优化2：返回值处理
+// 优化1：返回值处理
 // 问题：fn 在 setTimeout 中异步执行，调用方拿不到 fn 的返回值
+
 // 方案A：闭包存储（只能拿到"上一次"的返回值）
-function debounce_v4_closure(fn, delay) {
+function debounce_closure(fn, delay) {
   let timer = null;
-  let result = null;  // 闭包存返回值
-  return function (...args) {
+  let result = null;
+  function debounced(...args) {
     if (timer) clearTimeout(timer);
     timer = setTimeout(() => {
       result = fn.call(this, ...args);
       timer = null;
     }, delay);
-    return result;  // 注意：第一次调用返回 null，后续返回上一次的结果
+    return result; // 注意：第一次调用返回 null，后续返回上一次的结果
   }
+  return debounced;
 }
 
 // 方案B：Promise 包装（能拿到"本次"的返回值）
-function debounce_v4_promise(fn, delay) {
+function debounce_promise(fn, delay) {
   let timer = null;
-  return function (...args) {
+  function debounced(...args) {
     if (timer) clearTimeout(timer);
-    return new Promise((resolve) => {
-      timer = setTimeout(() => {
-        resolve(fn.call(this, ...args));
-        timer = null;
-      }, delay);
+    let res = null;
+    let promise = new Promise((resolve) => {
+      res = resolve;
     });
+    timer = setTimeout(() => {
+      res(fn.call(this, ...args));
+      timer = null;
+    }, delay);
+    return promise;
   }
+  return debounced;
 }
 // 使用：
-// const debouncedSearch = debounce_v4_promise(search, 300);
+// const debouncedSearch = debounce_promise(search, 300);
 // debouncedSearch('hello').then(res => console.log(res));
 
-// 优化3：cancel 方法（组件销毁时清理，防止内存泄漏）
+
+// 优化2：cancel 方法（组件销毁时清理，防止内存泄漏）
 // 场景：组件销毁了但 setTimeout 还没到时间 → delay 到了还会执行 fn
 //       fn 里引用了已销毁组件的状态 → 报错或内存泄漏
-function debounce_v5(fn, delay) {
+function debounce_final(fn, delay) {
   let timer = null;
 
   function debounced(...args) {
@@ -135,7 +130,6 @@ function debounce_v5(fn, delay) {
     }, delay);
   }
 
-  // 手动取消
   debounced.cancel = function () {
     clearTimeout(timer);
     timer = null;
@@ -145,7 +139,7 @@ function debounce_v5(fn, delay) {
 }
 
 // Vue 中使用：
-// const debouncedSearch = debounce_v5(search, 300);
+// const debouncedSearch = debounce_final(search, 300);
 // onUnmounted(() => {
 //   debouncedSearch.cancel();  // 组件销毁时清理定时器
 // });
