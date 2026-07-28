@@ -1,4 +1,4 @@
-// Promise 并发缓存去重
+// 5.Promise 并发缓存去重
 // @params url,fetcher(可以是自己封装的请求函数)
 // @return promise
 let myMap = new Map(); // key:url , value: promise 结果
@@ -10,6 +10,7 @@ const deduplication = (url, fetcher) => {
     res = resolve;
     rej = reject;
   });
+  myMap.set(url, promise); // 先塞入map，防止重复请求
   fetcher(url)
     .then((data) => {
       res(data);
@@ -20,7 +21,6 @@ const deduplication = (url, fetcher) => {
     .finally(() => {
       myMap.delete(url);
     });
-  myMap.set(url, promise);
   return promise;
 };
 
